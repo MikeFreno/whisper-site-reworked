@@ -13,6 +13,10 @@ export default function Navbar() {
   const path = usePathname();
   const { data: session, status } = useSession();
 
+  const showDropdown = () => {
+    return <div></div>;
+  };
+
   return (
     <div className={`fixed top-0 pt-8 backdrop-blur ${Ubuntu300.className}`}>
       <div className="flex w-screen flex-row">
@@ -52,6 +56,23 @@ export default function Navbar() {
                     Getting Started
                   </button>
                 </Link>
+              )}
+            </li>
+            <li>
+              {path === "/docs/roadmap" || path === "/docs/terms-of-service" ? (
+                <button
+                  onClick={showDropdown}
+                  className="rounded-lg px-4 py-2 underline underline-offset-4 hover:bg-orange-100"
+                >
+                  Docs
+                </button>
+              ) : (
+                <button
+                  onClick={showDropdown}
+                  className="rounded-lg px-4 py-2 underline-offset-4 hover:bg-orange-100 hover:underline"
+                >
+                  Docs
+                </button>
               )}
             </li>
             <li>

@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import { Ubuntu } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+
 const Ubuntu400 = Ubuntu({ weight: "400", subsets: ["latin"] });
 
 export default function Tutorial() {

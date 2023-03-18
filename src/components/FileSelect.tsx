@@ -247,7 +247,7 @@ export default function FileSelect() {
         {file === null ? (
           fileRejected ? (
             "File type rejected"
-          ) : fileTooLarge ? (
+          ) : fileTooLarge && fileSize ? (
             `File size too large! File size: ${fileSize}mb, Current max: 25mb`
           ) : (
             "No file selected..."
