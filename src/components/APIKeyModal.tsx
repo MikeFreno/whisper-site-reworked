@@ -6,17 +6,17 @@ import Link from "next/link";
 import { api } from "@/utils/api";
 
 export default function APIKeyModal(props: {
-  apiKeySetter: (apiKey: string) => void;
+  requestRouter: (apiKey: string) => void;
   toggleAPIKeyModal: () => void;
+  apiKeyExists: "api key exists" | "api key not found" | undefined;
 }) {
   const { data: session, status } = useSession();
   const passwordKeyRef = useRef<HTMLInputElement>(null);
   const apiKeyRef = useRef<HTMLInputElement>(null);
   const [loadingIndicator, setLoadingIndicator] = useState<boolean>(false);
-  const apiKeyExists = api.main.checkIfApiKeyExists.useQuery().data;
   const apiKeyMutation = api.main.getApiKey.useMutation();
   const [error, setError] = useState<string>("");
-  const { apiKeySetter, toggleAPIKeyModal } = props;
+  const { requestRouter, toggleAPIKeyModal, apiKeyExists } = props;
 
   const submitState = () => {
     if (loadingIndicator) {
@@ -40,7 +40,8 @@ export default function APIKeyModal(props: {
         const apiKey = await apiKeyMutation.mutateAsync(
           passwordKeyRef.current.value
         );
-        apiKeySetter(apiKey);
+        console.log(apiKey);
+        requestRouter(apiKey);
         toggleAPIKeyModal();
       } catch {
         setError("bad decrypt - invalid password");
@@ -49,8 +50,8 @@ export default function APIKeyModal(props: {
   };
 
   const submitWithAPIKey = () => {
-    if (apiKeyRef.current?.value && apiKeyRef.current.value.length >= 40) {
-      apiKeySetter(apiKeyRef.current?.value);
+    if (apiKeyRef.current?.value && apiKeyRef.current.value.length >= 35) {
+      requestRouter(apiKeyRef.current?.value);
       toggleAPIKeyModal();
     } else {
       setError("Invalid API Key");
@@ -90,33 +91,34 @@ export default function APIKeyModal(props: {
       <>
         <div className="absolute z-50 h-screen w-screen backdrop-blur-sm">
           <div className="flex justify-center pt-36">
-            <div className="rounded-xl bg-white px-8 py-6 shadow-lg"></div>
-            <div className="py-4">
-              <div>Enter you&apos;re API key</div>
+            <div className="rounded-xl bg-white px-8 py-6 shadow-lg">
               <div className="py-4">
-                <form onSubmit={submitWithAPIKey}>
-                  <Input
-                    underlined
-                    placeholder="OpenAI API key"
-                    required
-                    ref={apiKeyRef}
-                  />
-                  <div className="py-2">{submitState()}</div>
-                  {error !== "" ? (
-                    <div className="py-2 text-center italic text-red-500">
-                      {error}
-                    </div>
-                  ) : null}
-                </form>
-              </div>
-              <div>
-                Confused? Click here to{" "}
-                <Link
-                  href={"/docs/tutorial"}
-                  className="text-blue-400 underline underline-offset-4"
-                >
-                  get started
-                </Link>
+                <div>Enter your API key</div>
+                <div className="py-4">
+                  <form onSubmit={submitWithAPIKey}>
+                    <Input
+                      underlined
+                      placeholder="OpenAI API key"
+                      required
+                      ref={apiKeyRef}
+                    />
+                    <div className="py-2">{submitState()}</div>
+                    {error !== "" ? (
+                      <div className="py-2 text-center italic text-red-500">
+                        {error}
+                      </div>
+                    ) : null}
+                  </form>
+                </div>
+                <div>
+                  Confused? Click here to{" "}
+                  <Link
+                    href={"/docs/tutorial"}
+                    className="text-blue-400 underline underline-offset-4"
+                  >
+                    get started
+                  </Link>
+                </div>
               </div>
             </div>
           </div>

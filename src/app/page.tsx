@@ -17,6 +17,7 @@ const Home: NextPage = () => {
           <p className="pt-2 text-center">
             Capable of handling the following file types:
             <br /> M4A, MP3, MP4, MPEG, MPGA, WAV and WEBM
+            <br /> Max file size is currently 25mb
           </p>
         </div>
         <FileSelect />

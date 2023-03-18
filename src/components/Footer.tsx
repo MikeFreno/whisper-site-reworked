@@ -12,8 +12,8 @@ const Footer = () => {
   }
 
   return (
-    <div className="mx-auto mt-12 h-2/5 w-screen text-center text-zinc-800 dark:text-zinc-300">
-      <ul className="icons mt-6">
+    <div className="mx-auto h-2/5 w-screen pt-12 text-center text-zinc-800 dark:text-zinc-300">
+      <ul className="icons pt-6">
         <li>
           <a
             href="https://github.com/MikeFreno/"

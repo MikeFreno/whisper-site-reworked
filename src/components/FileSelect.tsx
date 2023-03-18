@@ -9,24 +9,21 @@ import { Checkbox } from "@nextui-org/react";
 import LongArrow from "@/icons/LongArrow";
 import { api } from "@/utils/api";
 import APIKeyModal from "@/components/APIKeyModal";
+import { v4 as uuidv4 } from "uuid";
+import fs from "fs";
 
 export default function FileSelect() {
   const [file, setFile] = useState<File | Blob | null>(null);
   const [fileRejected, setFileRejected] = useState<boolean>(false);
-  const [fileUploading, setFileUploading] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<boolean>(false);
   const [output, setOutput] = useState<string>("");
   const dataArea = useRef<HTMLTextAreaElement | null>(null);
-  const [fileProcessed, setFileProcessed] = useState<boolean>(false);
-  const [fileData, setFileData] = useState<string | ArrayBuffer | null>(null);
-  const [processReport, setProcessReport] = useState<string>("");
   const [requestingTranslate, setRequestingTranslate] =
     useState<boolean>(false);
-  const [fullPath, setFullPath] = useState<string>("");
-  const [apiKey, setAPIKey] = useState<string>("");
   const [apiKeyModal, setAPIKeyModal] = useState<boolean>(false);
-
-  const fileUploadMutation = api.main.uploadFile.useMutation();
+  const apiKeyExists = api.main.checkIfApiKeyExists.useQuery().data;
+  const [fileProcessing, setFileProcessing] = useState<boolean>(false);
+  const [complete, setComplete] = useState<boolean>(false);
+  const [fileTooLarge, setFileTooLarge] = useState<boolean>(false);
 
   const handleFileDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file: File) => {
@@ -40,14 +37,13 @@ export default function FileSelect() {
         ext === "wav" ||
         ext === "webm"
       ) {
-        setFile(file);
-        setFileRejected(false);
-        const reader = new FileReader();
-        reader.onload = () => {
-          const str = reader.result;
-          setFileData(str);
-        };
-        reader.readAsDataURL(file);
+        if (file.size / 1000 / 1000 <= 25) {
+          console.log(file.size / 1000 / 1000);
+          setFile(file);
+          setFileRejected(false);
+        }
+        setFile(null);
+        setFileTooLarge(true);
       } else {
         setFile(null);
         setFileRejected(true);
@@ -57,7 +53,7 @@ export default function FileSelect() {
 
   const buttonState = () => {
     if (file !== null) {
-      if (fileUploading) {
+      if (fileProcessing) {
         return (
           <div className="flex justify-center pt-4">
             <button
@@ -87,60 +83,119 @@ export default function FileSelect() {
     }
   };
 
-  const requestRouter = async () => {
-    if (requestingTranslate) {
-      await requestTranslation();
-    } else {
-      await requestTranscription();
-    }
-  };
-  const apiKeySetter = (apiKey: string) => {
-    setAPIKey(apiKey);
-    sendFileToServer();
-  };
-  const translationToggle = () => {
-    setRequestingTranslate(!requestingTranslate);
-  };
-
-  const sendFileToServer = () => {
-    return "";
-  };
-
   const toggleAPIKeyModal = () => {
     setAPIKeyModal(!apiKeyModal);
   };
 
-  const requestTranscription = async () => {
+  // const sendFileToServer = async () => {
+  //   setFileUploading(true);
+  //   const uuidString = uuidv4();
+  //   setUuid(uuidString);
+  //   if (file) {
+  //     const res = await fetch(`/api/upload?name=${uuidString}-${file.name}`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         base64: fileData,
+  //       }),
+  //     });
+  //     console.log(res);
+  //     if (res.status === 200) {
+  //       setUploadProgress(true);
+  //       setProcessReport("File uploaded, processing...");
+  //       await requestRouter();
+  //     }
+  //     // if(res == "file upload successful"){
+
+  //     // }
+  //     // requestRouter();
+  //   }
+  // };
+
+  const requestRouter = async (apiKey: string) => {
+    console.log(apiKey);
+    if (requestingTranslate) {
+      setFileProcessing(true);
+      await requestTranslation(apiKey);
+    } else {
+      setFileProcessing(true);
+      await requestTranscription(apiKey);
+    }
+  };
+
+  const translationToggle = () => {
+    setRequestingTranslate(!requestingTranslate);
+  };
+
+  const requestTranscription = async (apiKey: string) => {
     if (file) {
       const formData = new FormData();
-      formData.append("file", file.name);
+      formData.append("file", file);
       formData.append("model", "whisper-1");
+      formData.append("response_format", "text");
       const res = await fetch(
         "https://api.openai.com/v1/audio/transcriptions",
         {
           method: "POST",
           headers: {
-            Authorization: "Bearer TOKEN",
+            Authorization: `Bearer ${apiKey}`,
           },
           body: formData,
         }
       );
+      if (res.body) {
+        const reader = res.body.getReader();
+
+        const decoder = new TextDecoder();
+        let data = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          data += decoder.decode(value);
+        }
+        setOutput(data);
+      } else {
+        alert("Error processing!");
+      }
+      setComplete(true);
       console.log(res);
+      setFileProcessing(false);
     }
   };
-  const requestTranslation = async () => {
+  const requestTranslation = async (apiKey: string) => {
     if (file) {
       const formData = new FormData();
-      formData.append("file", file.name);
+      formData.append("file", file);
       formData.append("model", "whisper-1");
+      formData.append("response_format", "text");
       const res = await fetch("https://api.openai.com/v1/audio/translations", {
         method: "POST",
         headers: {
-          Authorization: "Bearer TOKEN",
+          Authorization: `Bearer ${apiKey}`,
         },
         body: formData,
       });
+      if (res.body) {
+        const reader = res.body.getReader();
+
+        const decoder = new TextDecoder();
+        let data = "";
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          data += decoder.decode(value);
+        }
+        setOutput(data);
+      } else {
+        alert("Error processing!");
+      }
+      setComplete(true);
       console.log(res);
+      setFileProcessing(false);
     }
   };
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -165,8 +220,10 @@ export default function FileSelect() {
     <>
       {apiKeyModal ? (
         <APIKeyModal
-          apiKeySetter={apiKeySetter}
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
+          requestRouter={requestRouter}
           toggleAPIKeyModal={toggleAPIKeyModal}
+          apiKeyExists={apiKeyExists}
         />
       ) : null}
       <div className="flex justify-center rounded-full pt-4">
@@ -186,6 +243,8 @@ export default function FileSelect() {
           "File type rejected"
         ) : file == null ? (
           "No file selected..."
+        ) : fileTooLarge ? (
+          "File size too large. Max 25mb, this is due to OpenAI limitations, a workaround is being worked on."
         ) : (
           <div className="underline underline-offset-[6px]">{file.name}</div>
         )}
@@ -223,10 +282,10 @@ export default function FileSelect() {
         <div className="flex justify-center">
           <div className="flex flex-col items-center">
             <div className="pt-4">Need Translation? Check the box below</div>
-            <div className="text-sm">
+            <div className="pb-1 text-sm">
               ( Currently only audio to English translation is supported )
             </div>
-            <div className="animate-up-down pt-2">
+            <div className="animate-up-down py-1">
               <div className="rotate-90">
                 <LongArrow
                   height={24}
@@ -236,29 +295,25 @@ export default function FileSelect() {
                 />
               </div>
             </div>
-            <div className="py-4">
+            <div className="pb-4">
               <Checkbox onChange={translationToggle} css={{ zIndex: 0 }} />
             </div>
           </div>
         </div>
       ) : null}
       {buttonState()}
-      {fileUploading ? (
+      {fileProcessing || complete ? (
         <>
-          <div className="my-4 flex justify-center">
-            <div className="animate-spinner">
-              <SpinnerIcon height={64} width={64} fill={"#60a5fa"} />
-            </div>
-          </div>
-          {uploadProgress ? (
-            <div className="text-center italic">{processReport}</div>
-          ) : (
-            <div className="text-center italic">File uploading...</div>
-          )}
-        </>
-      ) : null}
-      {uploadProgress || fileProcessed ? (
-        <>
+          {fileProcessing ? (
+            <>
+              <div className="my-4 flex justify-center">
+                <div className="animate-spinner">
+                  <SpinnerIcon height={64} width={64} fill={"#60a5fa"} />
+                </div>
+              </div>
+              <div className="text-center italic">File processing...</div>
+            </>
+          ) : null}
           <div className="flex justify-center pt-8">
             <textarea
               ref={dataArea}

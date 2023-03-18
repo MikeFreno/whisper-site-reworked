@@ -9,25 +9,6 @@ import { User } from "@prisma/client";
 import { encrypt, decrypt, stringToEncryptionKey } from "@/utils/crypto";
 
 export const mainRouter = createTRPCRouter({
-  uploadFile: protectedProcedure
-    .input(
-      z.object({
-        base64: z.string(),
-        filename: z.string(),
-      })
-    )
-    .mutation(({ ctx, input }) => {
-      const imageBuffer = Buffer.from(input.base64, "base64");
-
-      fs.writeFile(`src/uploads/${input.filename}`, imageBuffer, (err) => {
-        if (err) {
-          console.error(err);
-          return err;
-        } else {
-          return "file upload successful";
-        }
-      });
-    }),
   checkEmail: publicProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
@@ -68,6 +49,7 @@ export const mainRouter = createTRPCRouter({
       });
       if (user && user.apiKey) {
         const decryptedApiKey = decrypt(user?.apiKey, encryptionKey);
+        console.log(decryptedApiKey);
         return decryptedApiKey;
       } else {
         return "No stored Api key found";

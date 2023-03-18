@@ -27,7 +27,7 @@ const AccountPage: NextPage = () => {
 
   const processKey = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (apiKeyRef.current && apiKeyRef.current.value.length >= 40) {
+    if (apiKeyRef.current && apiKeyRef.current.value.length >= 35) {
       setApiKey(apiKeyRef.current?.value);
       togglePasswordInputModal();
     } else {
@@ -53,9 +53,9 @@ const AccountPage: NextPage = () => {
               </span>
             </div>
             {apiKeyStored === "api key exists" ? (
-              <div className="pb-12">
-                You have a stored API key, you may overwrite it if needed.
-                <br /> i.e. in case of lost password
+              <div className="pb-12 italic">
+                ** You have a stored API key, you may overwrite it if needed.
+                <br /> i.e. in case of lost password **
               </div>
             ) : null}
             <form onSubmit={processKey}>
