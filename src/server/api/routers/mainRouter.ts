@@ -4,14 +4,30 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "@/server/api/trpc";
-
+import fs from "fs";
 import { User } from "@prisma/client";
 import { encrypt, decrypt, stringToEncryptionKey } from "@/utils/crypto";
 
 export const mainRouter = createTRPCRouter({
   uploadFile: protectedProcedure
-    .input(z.string())
-    .mutation(async ({ ctx, input }) => {}),
+    .input(
+      z.object({
+        base64: z.string(),
+        filename: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const imageBuffer = Buffer.from(input.base64, "base64");
+
+      fs.writeFile(`src/uploads/${input.filename}`, imageBuffer, (err) => {
+        if (err) {
+          console.error(err);
+          return err;
+        } else {
+          return "file upload successful";
+        }
+      });
+    }),
   checkEmail: publicProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
@@ -43,7 +59,7 @@ export const mainRouter = createTRPCRouter({
     }),
   getApiKey: protectedProcedure
     .input(z.string())
-    .query(async ({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       const encryptionKey = stringToEncryptionKey(input);
       const user = await ctx.prisma.user.findFirst({
         where: {
@@ -57,4 +73,14 @@ export const mainRouter = createTRPCRouter({
         return "No stored Api key found";
       }
     }),
+  checkIfApiKeyExists: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.prisma.user.findFirst({
+      where: {
+        id: ctx.session.user.id,
+      },
+    });
+    if (user?.apiKey) {
+      return "api key exists";
+    } else return "api key not found";
+  }),
 });

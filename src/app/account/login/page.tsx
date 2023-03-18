@@ -3,7 +3,6 @@ import Navbar from "@/components/Navbar";
 import GitHub from "@/icons/GitHub";
 import GoogleLogo from "@/icons/GoogleLogo";
 import InfoIcon from "@/icons/InfoIcon";
-import { api } from "@/utils/api";
 import { Button, Input, Link, Loading, Tooltip } from "@nextui-org/react";
 import { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";

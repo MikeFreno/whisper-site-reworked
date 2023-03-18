@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { Button, Input, Link, Loading, Tooltip } from "@nextui-org/react";
 import PasswordModal from "@/components/PasswordModal";
+import { api } from "@/utils/api";
 
 const Ubuntu400 = Ubuntu({ weight: "400", subsets: ["latin"] });
 
@@ -15,9 +16,10 @@ const AccountPage: NextPage = () => {
   const router = useRouter();
   const apiKeyRef = useRef<HTMLInputElement | null>(null);
   const [passwordModalShowing, setPasswordModalShowing] =
-    useState<boolean>(true);
+    useState<boolean>(false);
   const [apiKey, setApiKey] = useState<string>("");
   const [apiKeyPass, setApiKeyPass] = useState<boolean>(true);
+  const apiKeyStored = api.main.checkIfApiKeyExists.useQuery().data;
 
   if (status === "unauthenticated") {
     router.push("/account/login");
@@ -32,10 +34,14 @@ const AccountPage: NextPage = () => {
       setApiKeyPass(false);
     }
   };
-  const togglePasswordInputModal = () => {};
+  const togglePasswordInputModal = () => {
+    setPasswordModalShowing(!passwordModalShowing);
+  };
+
   return (
     <>
       <Navbar />
+      {passwordModalShowing ? <PasswordModal apiKey={apiKey} /> : null}
       <main className={`min-h-screen px-12 pt-36 pb-12 ${Ubuntu400.className}`}>
         <div className="flex justify-center">
           <div className="flex flex-col">
@@ -46,18 +52,30 @@ const AccountPage: NextPage = () => {
                 {session?.user?.email}
               </span>
             </div>
+            {apiKeyStored === "api key exists" ? (
+              <div className="pb-12">
+                You have a stored API key, you may overwrite it if needed.
+                <br /> i.e. in case of lost password
+              </div>
+            ) : null}
             <form onSubmit={processKey}>
               <Input
-                id="emailInput"
                 ref={apiKeyRef}
                 labelPlaceholder="OpenAI API Key"
                 required
                 clearable
                 underlined
                 status={apiKeyPass ? "warning" : "error"}
+                css={{ zIndex: 0 }}
               />
               <div className="py-2">
-                <Button shadow color="warning" auto type="submit">
+                <Button
+                  shadow
+                  color="warning"
+                  auto
+                  type="submit"
+                  css={{ zIndex: 0 }}
+                >
                   Set Key
                 </Button>
               </div>
@@ -67,7 +85,6 @@ const AccountPage: NextPage = () => {
             </div>
           </div>
         </div>
-        {passwordModalShowing ? <PasswordModal apiKey={apiKey} /> : null}
       </main>
     </>
   );

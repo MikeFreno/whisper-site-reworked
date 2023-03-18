@@ -7,6 +7,8 @@ import Dropzone from "./Dropzone";
 import CopyIcon from "@/icons/CopyIcon";
 import { Checkbox } from "@nextui-org/react";
 import LongArrow from "@/icons/LongArrow";
+import { api } from "@/utils/api";
+import APIKeyModal from "@/components/APIKeyModal";
 
 export default function FileSelect() {
   const [file, setFile] = useState<File | Blob | null>(null);
@@ -18,10 +20,13 @@ export default function FileSelect() {
   const [fileProcessed, setFileProcessed] = useState<boolean>(false);
   const [fileData, setFileData] = useState<string | ArrayBuffer | null>(null);
   const [processReport, setProcessReport] = useState<string>("");
-  const [searchText, setSearchText] = useState("");
   const [requestingTranslate, setRequestingTranslate] =
     useState<boolean>(false);
   const [fullPath, setFullPath] = useState<string>("");
+  const [apiKey, setAPIKey] = useState<string>("");
+  const [apiKeyModal, setAPIKeyModal] = useState<boolean>(false);
+
+  const fileUploadMutation = api.main.uploadFile.useMutation();
 
   const handleFileDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file: File) => {
@@ -49,22 +54,37 @@ export default function FileSelect() {
       }
     });
   }, []);
-  const translationToggle = () => {
-    setRequestingTranslate(!requestingTranslate);
-  };
 
-  const sendFileToServer = async () => {
-    setFileUploading(true);
-
-    setUploadProgress(true);
-    setProcessReport("File uploaded, processing...");
-    setTimeout(() => {
-      "This process will take a few minutes...";
-    }, 20000);
-    setTimeout(() => {
-      "File still processing! Don't reload page...";
-    }, 40000);
-    await requestRouter();
+  const buttonState = () => {
+    if (file !== null) {
+      if (fileUploading) {
+        return (
+          <div className="flex justify-center pt-4">
+            <button
+              disabled
+              className="flex rounded bg-blue-400 px-4 py-2 hover:bg-blue-500 active:bg-blue-600"
+            >
+              <div className="text-white">Loading...</div>
+            </button>
+          </div>
+        );
+      } else {
+        return (
+          <div className="flex justify-center pt-4">
+            <button
+              className="flex rounded bg-blue-400 px-4 py-2 hover:bg-blue-500 active:bg-blue-600"
+              //  eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={toggleAPIKeyModal}
+            >
+              <SpinIcon height={24} width={24} fill={"#fb923c"} />
+              <div className="pl-2 text-white">
+                {requestingTranslate ? "Translate!" : "Transcribe!"}
+              </div>
+            </button>
+          </div>
+        );
+      }
+    }
   };
 
   const requestRouter = async () => {
@@ -73,6 +93,19 @@ export default function FileSelect() {
     } else {
       await requestTranscription();
     }
+  };
+  const apiKeySetter = (apiKey: string) => {
+    setAPIKey(apiKey);
+    sendFileToServer();
+  };
+  const translationToggle = () => {
+    setRequestingTranslate(!requestingTranslate);
+  };
+
+  const sendFileToServer = async () => {};
+
+  const toggleAPIKeyModal = () => {
+    setAPIKeyModal(!apiKeyModal);
   };
 
   const requestTranscription = async () => {
@@ -126,38 +159,14 @@ export default function FileSelect() {
     }
   };
 
-  const buttonState = () => {
-    if (file !== null) {
-      if (fileUploading) {
-        return (
-          <div className="flex justify-center pt-4">
-            <button
-              disabled
-              className="flex rounded bg-blue-400 px-4 py-2 hover:bg-blue-500 active:bg-blue-600"
-            >
-              <div className="text-white">Loading...</div>
-            </button>
-          </div>
-        );
-      } else {
-        return (
-          <div className="flex justify-center pt-4">
-            <button
-              className="flex rounded bg-blue-400 px-4 py-2 hover:bg-blue-500 active:bg-blue-600"
-              //  eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={requestRouter}
-            >
-              <SpinIcon height={24} width={24} fill={"#fb923c"} />
-              <div className="pl-2 text-white">Transcribe!</div>
-            </button>
-          </div>
-        );
-      }
-    }
-  };
-
   return (
     <>
+      {apiKeyModal ? (
+        <APIKeyModal
+          apiKeySetter={apiKeySetter}
+          toggleAPIKeyModal={toggleAPIKeyModal}
+        />
+      ) : null}
       <div className="flex justify-center rounded-full pt-4">
         <div className="">
           <Dropzone
@@ -226,7 +235,7 @@ export default function FileSelect() {
               </div>
             </div>
             <div className="py-4">
-              <Checkbox onChange={translationToggle} />
+              <Checkbox onChange={translationToggle} css={{ zIndex: 0 }} />
             </div>
           </div>
         </div>

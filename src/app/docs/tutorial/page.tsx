@@ -79,15 +79,34 @@ export default function Tutorial() {
               >
                 here
               </Link>{" "}
-              and paste your API key into the API key field. You will then be
-              prompted to create a password. This will be used to encrypt your
-              key.
+              and paste your API key into the API key field.{" "}
+              <div className="flex justify-center pt-2">
+                <Image
+                  src={"/tutorial-3.jpg"}
+                  alt={"set API key"}
+                  height={300}
+                  width={500}
+                  className=""
+                />
+              </div>
+              You will then be prompted to create a password. This will be used
+              to encrypt your key.{" "}
+              <div className="flex justify-center pt-2">
+                <Image
+                  src={"/tutorial-4.jpg"}
+                  alt={"save password"}
+                  height={250}
+                  width={400}
+                />
+              </div>
               <span className="italic">
                 There will be no way to recover this, so if you lose/forget it
                 you will need to create a new API key with OpenAI
               </span>
             </div>
-            <div className="pl-8">
+          </li>
+          <li className="">
+            <div className="pl-8 pt-4">
               **If you are choose not to create an account then make sure you
               save the key some place else. Please make sure you store it in a
               place that will not be exposed to the open internet. We recommend
