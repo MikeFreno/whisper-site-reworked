@@ -8,7 +8,7 @@ import { api } from "@/utils/api";
 export default function APIKeyModal(props: {
   requestRouter: (apiKey: string) => void;
   toggleAPIKeyModal: () => void;
-  apiKeyExists: "api key exists" | "api key not found" | undefined;
+  apiKeyExists: "api key exists" | "api key not found" | "no user" | undefined;
 }) {
   const { data: session, status } = useSession();
   const passwordKeyRef = useRef<HTMLInputElement>(null);

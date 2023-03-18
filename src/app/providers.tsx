@@ -5,15 +5,11 @@ import { ClientProvider } from "./trpcClient";
 
 import { api } from "@/utils/api";
 
-interface ProvidersProps {
-  children: React.ReactNode;
-}
-
-export default function Providers({ children }: ProvidersProps) {
+export default function Providers(props: { children: any }) {
   return (
     <ClientProvider>
       <SessionProvider>
-        <NextUIProvider>{children}</NextUIProvider>
+        <NextUIProvider>{props.children}</NextUIProvider>
       </SessionProvider>
     </ClientProvider>
   );

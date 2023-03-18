@@ -64,7 +64,7 @@ const LoginPage: NextPage = () => {
   return (
     <div className="">
       <Navbar />
-      <div className="flex h-screen justify-center pt-36">
+      <div className="flex h-screen justify-center pt-48">
         <div className="">
           {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
           <form onSubmit={emailLogin} className="flex flex-col px-2">
@@ -77,6 +77,7 @@ const LoginPage: NextPage = () => {
                 clearable
                 underlined
                 color="warning"
+                css={{ zIndex: 0 }}
               />
             </div>
             <div className="w-min">{loginSubmitButton()}</div>

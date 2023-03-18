@@ -56,13 +56,17 @@ export const mainRouter = createTRPCRouter({
       }
     }),
   checkIfApiKeyExists: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.prisma.user.findFirst({
-      where: {
-        id: ctx.session.user.id,
-      },
-    });
-    if (user?.apiKey) {
-      return "api key exists";
-    } else return "api key not found";
+    if (ctx.session.user.email) {
+      const user = await ctx.prisma.user.findFirst({
+        where: {
+          id: ctx.session.user.id,
+        },
+      });
+      if (user?.apiKey) {
+        return "api key exists";
+      } else return "api key not found";
+    } else {
+      return "no user";
+    }
   }),
 });

@@ -54,6 +54,7 @@ export default function Tutorial() {
                 alt={"creating API key"}
                 height={500}
                 width={800}
+                priority
               />
             </div>
             <div className="py-2">
