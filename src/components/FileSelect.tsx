@@ -24,6 +24,7 @@ export default function FileSelect() {
   const [fileProcessing, setFileProcessing] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
   const [fileTooLarge, setFileTooLarge] = useState<boolean>(false);
+  const [fileSize, setFileSize] = useState<number | null>(null);
 
   const handleFileDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file: File) => {
@@ -37,13 +38,17 @@ export default function FileSelect() {
         ext === "wav" ||
         ext === "webm"
       ) {
-        if (file.size / 1000 / 1000 <= 25) {
-          console.log(file.size / 1000 / 1000);
+        const thisFileSize = file.size / 1000000;
+        setFileSize(thisFileSize);
+        console.log(fileSize);
+        if (thisFileSize <= 25) {
           setFile(file);
           setFileRejected(false);
+          setFileTooLarge(false);
+        } else {
+          setFile(null);
+          setFileTooLarge(true);
         }
-        setFile(null);
-        setFileTooLarge(true);
       } else {
         setFile(null);
         setFileRejected(true);
@@ -239,12 +244,14 @@ export default function FileSelect() {
         </div>
       </div>
       <div className="text-center">
-        {fileRejected ? (
-          "File type rejected"
-        ) : file == null ? (
-          "No file selected..."
-        ) : fileTooLarge ? (
-          "File size too large. Max 25mb, this is due to OpenAI limitations, a workaround is being worked on."
+        {file === null ? (
+          fileRejected ? (
+            "File type rejected"
+          ) : fileTooLarge ? (
+            `File size too large! File size: ${fileSize}mb, Current max: 25mb`
+          ) : (
+            "No file selected..."
+          )
         ) : (
           <div className="underline underline-offset-[6px]">{file.name}</div>
         )}
