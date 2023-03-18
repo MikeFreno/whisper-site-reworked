@@ -16,7 +16,7 @@ export const mainRouter = createTRPCRouter({
         filename: z.string(),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(({ ctx, input }) => {
       const imageBuffer = Buffer.from(input.base64, "base64");
 
       fs.writeFile(`src/uploads/${input.filename}`, imageBuffer, (err) => {

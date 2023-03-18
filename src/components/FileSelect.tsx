@@ -102,7 +102,9 @@ export default function FileSelect() {
     setRequestingTranslate(!requestingTranslate);
   };
 
-  const sendFileToServer = async () => {};
+  const sendFileToServer = () => {
+    return "";
+  };
 
   const toggleAPIKeyModal = () => {
     setAPIKeyModal(!apiKeyModal);

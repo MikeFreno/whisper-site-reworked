@@ -11,10 +11,11 @@ export default function APIKeyModal(props: {
 }) {
   const { data: session, status } = useSession();
   const passwordKeyRef = useRef<HTMLInputElement>(null);
+  const apiKeyRef = useRef<HTMLInputElement>(null);
   const [loadingIndicator, setLoadingIndicator] = useState<boolean>(false);
   const apiKeyExists = api.main.checkIfApiKeyExists.useQuery().data;
   const apiKeyMutation = api.main.getApiKey.useMutation();
-
+  const [error, setError] = useState<string>("");
   const { apiKeySetter, toggleAPIKeyModal } = props;
 
   const submitState = () => {
@@ -35,15 +36,26 @@ export default function APIKeyModal(props: {
   const getAPIKey = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (passwordKeyRef.current) {
-      const apiKey = await apiKeyMutation.mutateAsync(
-        passwordKeyRef.current.value
-      );
-      apiKeySetter(apiKey);
-      toggleAPIKeyModal();
+      try {
+        const apiKey = await apiKeyMutation.mutateAsync(
+          passwordKeyRef.current.value
+        );
+        apiKeySetter(apiKey);
+        toggleAPIKeyModal();
+      } catch {
+        setError("bad decrypt - invalid password");
+      }
     }
   };
 
-  const submitWithAPIKey = () => {};
+  const submitWithAPIKey = () => {
+    if (apiKeyRef.current?.value && apiKeyRef.current.value.length >= 40) {
+      apiKeySetter(apiKeyRef.current?.value);
+      toggleAPIKeyModal();
+    } else {
+      setError("Invalid API Key");
+    }
+  };
 
   if (apiKeyExists === "api key exists") {
     return (
@@ -52,6 +64,7 @@ export default function APIKeyModal(props: {
           <div className="flex justify-center pt-36">
             <div className="rounded-xl bg-white px-8 py-6 shadow-lg">
               <div className="py-4">Enter your password to unlock API key</div>
+              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
               <form onSubmit={getAPIKey}>
                 <Input.Password
                   underlined
@@ -61,6 +74,11 @@ export default function APIKeyModal(props: {
                   ref={passwordKeyRef}
                 />
                 <div className="py-2">{submitState()}</div>
+                {error !== "" ? (
+                  <div className="py-2 text-center italic text-red-500">
+                    {error}
+                  </div>
+                ) : null}
               </form>
             </div>
           </div>
@@ -74,11 +92,21 @@ export default function APIKeyModal(props: {
           <div className="flex justify-center pt-36">
             <div className="rounded-xl bg-white px-8 py-6 shadow-lg"></div>
             <div className="py-4">
-              <div>Enter you're API key</div>
+              <div>Enter you&apos;re API key</div>
               <div className="py-4">
                 <form onSubmit={submitWithAPIKey}>
-                  <Input underlined placeholder="OpenAI API key" required />
+                  <Input
+                    underlined
+                    placeholder="OpenAI API key"
+                    required
+                    ref={apiKeyRef}
+                  />
                   <div className="py-2">{submitState()}</div>
+                  {error !== "" ? (
+                    <div className="py-2 text-center italic text-red-500">
+                      {error}
+                    </div>
+                  ) : null}
                 </form>
               </div>
               <div>

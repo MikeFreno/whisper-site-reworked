@@ -47,8 +47,9 @@ const PasswordModal = (props: { apiKey: string }) => {
           {!success ? (
             <>
               <div className="py-4">
-                Enter a password to encrypt you're API key
+                Enter a password to encrypt you&apos;re API key
               </div>
+              {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
               <form onSubmit={apiStore}>
                 <Input.Password
                   underlined

@@ -14,8 +14,8 @@ export default function Tutorial() {
           <li className="text-center">
             <div className="text-xl">Preface:</div>
             <div className="">
-              If you haven't already, creating and setting up an account takes
-              only a few minutes and makes future uses of this app much
+              If you haven&apos;t already, creating and setting up an account
+              takes only a few minutes and makes future uses of this app much
               smoother, however, it is not necessary
             </div>
           </li>
@@ -45,8 +45,8 @@ export default function Tutorial() {
                 your API keys
               </a>{" "}
               and create an API key
-              <br /> (if you already have one, and don't have it saved you can
-              simply create a new one)
+              <br /> (if you already have one, and don&apos;t have it saved you
+              can simply create a new one)
             </div>
             <div className="flex justify-center pt-2">
               <Image

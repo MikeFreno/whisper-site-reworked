@@ -1,15 +1,20 @@
 "use client";
 import { NextUIProvider } from "@nextui-org/react";
 import { SessionProvider } from "next-auth/react";
+import { ClientProvider } from "./trpcClient";
 
 import { api } from "@/utils/api";
 
-function Providers({ children }: any) {
-  return (
-    <SessionProvider>
-      <NextUIProvider>{children}</NextUIProvider>
-    </SessionProvider>
-  );
+interface ProvidersProps {
+  children: React.ReactNode;
 }
 
-export default api.withTRPC(Providers);
+export default function Providers({ children }: ProvidersProps) {
+  return (
+    <ClientProvider>
+      <SessionProvider>
+        <NextUIProvider>{children}</NextUIProvider>
+      </SessionProvider>
+    </ClientProvider>
+  );
+}

@@ -9,11 +9,7 @@ export const metadata = {
 import "@/styles/globals.css";
 import Providers from "./providers";
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: any) {
   return (
     <html lang="en" className="scroll-smooth">
       <body className="bg-orange-50">

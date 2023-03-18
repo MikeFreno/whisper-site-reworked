@@ -1,0 +1,102 @@
+
+> whisper@0.1.0 build
+> next build
+
+info  - Loaded env from /Users/mike/VS Code/whisper-site/.env
+warn  - You have enabled experimental feature (appDir) in next.config.mjs.
+warn  - Experimental features are not covered by semver, and may cause unexpected or broken application behavior. Use at your own risk.
+
+info  - Thank you for testing `appDir` please leave your feedback at https://nextjs.link/app-feedback
+info  - Creating an optimized production build...
+info  - Compiled successfully
+info  - Linting and checking validity of types...
+
+./src/app/account/login/page.tsx
+7:1  Warning: All imports in the declaration are only used as types. Use `import type`.  @typescript-eslint/consistent-type-imports
+12:17  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
+14:7  Warning: 'Ubuntu400' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+18:10  Warning: 'focusedElement' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+18:26  Warning: 'setFocusedElement' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+22:9  Warning: 'path' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+23:17  Warning: 'session' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/account/page.tsx
+3:1  Warning: All imports in the declaration are only used as types. Use `import type`.  @typescript-eslint/consistent-type-imports
+7:17  Warning: 'useEffect' is defined but never used.  @typescript-eslint/no-unused-vars
+8:25  Warning: 'Link' is defined but never used.  @typescript-eslint/no-unused-vars
+8:31  Warning: 'Loading' is defined but never used.  @typescript-eslint/no-unused-vars
+8:40  Warning: 'Tooltip' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/app/layout.tsx
+12:50  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/app/providers.tsx
+6:10  Warning: 'api' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/APIKeyModal.tsx
+12:17  Warning: 'session' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+12:26  Warning: 'status' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+15:28  Warning: 'setLoadingIndicator' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/ClickOutsideHook.tsx
+1:1  Warning: Import "RefObject" is only used as types.  @typescript-eslint/consistent-type-imports
+
+./src/components/Dropzone.tsx
+4:45  Warning: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./src/components/FileSelect.tsx
+16:25  Warning: 'setFileUploading' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+17:26  Warning: 'setUploadProgress' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+20:25  Warning: 'setFileProcessed' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+21:10  Warning: 'fileData' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+22:25  Warning: 'setProcessReport' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+25:10  Warning: 'fullPath' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+25:20  Warning: 'setFullPath' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+26:10  Warning: 'apiKey' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+29:9  Warning: 'fileUploadMutation' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+90:9  Warning: 'requestRouter' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/Footer.tsx
+1:17  Warning: 'useContext' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./src/components/Navbar.tsx
+7:22  Warning: 'signIn' is defined but never used.  @typescript-eslint/no-unused-vars
+8:19  Warning: 'NextUIProvider' is defined but never used.  @typescript-eslint/no-unused-vars
+14:17  Warning: 'session' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./src/server/api/routers/mainRouter.ts
+8:10  Warning: 'User' is defined but never used.  @typescript-eslint/no-unused-vars
+19:18  Warning: 'ctx' is defined but never used. Allowed unused args must match /^_/u.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+info  - Collecting page data...
+info  - Generating static pages (0/7)
+info  - Generating static pages (1/7)
+info  - Generating static pages (3/7)
+info  - Generating static pages (5/7)
+info  - Generating static pages (7/7)
+info  - Finalizing page optimization...
+
+Route (app)                                Size     First Load JS
+┌ ○ /                                      22.4 kB         171 kB
+├ ○ /account                               2.22 kB         151 kB
+├ ○ /account/login                         12.7 kB         136 kB
+├ ○ /docs/terms-of-service                 133 B            69 kB
+└ ○ /docs/tutorial                         864 B           102 kB
++ First Load JS shared by all              68.9 kB
+  ├ chunks/455-2776d384c3aa3cba.js         66.4 kB
+  ├ chunks/main-app-e8eaff1267609a5a.js    203 B
+  └ chunks/webpack-b879fe51a51d2ca9.js     2.23 kB
+
+Route (pages)                              Size     First Load JS
+┌ ○ /404                                   179 B          84.7 kB
+├ λ /api/auth/[...nextauth]                0 B            84.5 kB
+└ λ /api/trpc/[trpc]                       0 B            84.5 kB
++ First Load JS shared by all              84.5 kB
+  ├ chunks/main-8d13b1336f567646.js        82.1 kB
+  ├ chunks/pages/_app-907dedfd0e4177db.js  192 B
+  └ chunks/webpack-b879fe51a51d2ca9.js     2.23 kB
+
+λ  (Server)  server-side renders at runtime (uses getInitialProps or getServerSideProps)
+○  (Static)  automatically rendered as static HTML (uses no initial props)
+

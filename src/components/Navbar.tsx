@@ -62,7 +62,9 @@ export default function Navbar() {
                       Account
                     </button>
                   </Link>
+
                   <button
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onClick={() => signOut()}
                     className="rounded-lg px-4 py-2 text-black underline-offset-4 hover:bg-orange-100 hover:underline"
                   >
