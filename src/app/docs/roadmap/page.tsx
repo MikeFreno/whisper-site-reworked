@@ -58,24 +58,24 @@ const Roadmap: NextPage = () => {
           <ol className="px-12 py-4">
             <div className="text-lg">4. More translation output options.</div>
             <p className="px-2">
-              Currently, OpenAI's API does not support translation outputs other
-              than English. This may change soon and for that reason this is not
-              a priority. When all other goals are achieved, and the option
-              provided by OpenAI's API is still not launched, we will spin up a
-              container to achieve this. As we do not have the scale of OpenAI
-              or their relationship with Microsoft Azure, this will be expensive
-              to use in relative terms, for this reason, this is not our
-              preferred path. We do currently already have this capability, and
-              it can be implemented immediately, however, payments are not yet
-              live, and such this will not be implemented at earliest until
-              then.
+              Currently, OpenAI&apos;s API does not support translation outputs
+              other than English. This may change soon and for that reason this
+              is not a priority. When all other goals are achieved, and the
+              option provided by OpenAI&apos;s API is still not launched, we
+              will spin up a container to achieve this. As we do not have the
+              scale of OpenAI or their relationship with Microsoft Azure, this
+              will be expensive to use in relative terms, for this reason, this
+              is not our preferred path. We do currently already have this
+              capability, and it can be implemented immediately, however,
+              payments are not yet live, and such this will not be implemented
+              at earliest until then.
             </p>
           </ol>
           <ol className="px-12 py-4">
             <div className="text-lg">5. Better mobile support</div>
             <p className="px-2">
-              Non-priority, but shouldn't take long, so may be done earlier than
-              preceding goals.
+              Non-priority, but shouldn&apos;t take long, so may be done earlier
+              than preceding goals.
             </p>
           </ol>
         </ul>
