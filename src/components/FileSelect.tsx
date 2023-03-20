@@ -24,7 +24,6 @@ export default function FileSelect() {
 
   const handleFileDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file: File) => {
-      alert(file.type.split("/")[1]);
       const ext = file.type.split("/")[1];
       if (
         ext === "x-m4a" ||
