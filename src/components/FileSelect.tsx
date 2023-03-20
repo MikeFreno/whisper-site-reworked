@@ -7,10 +7,7 @@ import Dropzone from "./Dropzone";
 import CopyIcon from "@/icons/CopyIcon";
 import { Checkbox } from "@nextui-org/react";
 import LongArrow from "@/icons/LongArrow";
-import { api } from "@/utils/api";
 import APIKeyModal from "@/components/APIKeyModal";
-import { v4 as uuidv4 } from "uuid";
-import fs from "fs";
 
 export default function FileSelect() {
   const [file, setFile] = useState<File | Blob | null>(null);
@@ -20,7 +17,6 @@ export default function FileSelect() {
   const [requestingTranslate, setRequestingTranslate] =
     useState<boolean>(false);
   const [apiKeyModal, setAPIKeyModal] = useState<boolean>(false);
-  const apiKeyExists = api.main.checkIfApiKeyExists.useQuery().data;
   const [fileProcessing, setFileProcessing] = useState<boolean>(false);
   const [complete, setComplete] = useState<boolean>(false);
   const [fileTooLarge, setFileTooLarge] = useState<boolean>(false);
@@ -28,8 +24,11 @@ export default function FileSelect() {
 
   const handleFileDrop = useCallback((acceptedFiles: File[]) => {
     acceptedFiles.forEach((file: File) => {
+      alert(file.type.split("/")[1]);
       const ext = file.type.split("/")[1];
       if (
+        ext === "x-m4a" ||
+        ext === "x-wav" ||
         ext === "m4a" ||
         ext === "mp3" ||
         ext === "mp4" ||
@@ -228,7 +227,6 @@ export default function FileSelect() {
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           requestRouter={requestRouter}
           toggleAPIKeyModal={toggleAPIKeyModal}
-          apiKeyExists={apiKeyExists}
         />
       ) : null}
       <div className="flex justify-center rounded-full pt-4">

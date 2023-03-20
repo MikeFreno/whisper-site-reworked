@@ -8,15 +8,14 @@ import { api } from "@/utils/api";
 export default function APIKeyModal(props: {
   requestRouter: (apiKey: string) => void;
   toggleAPIKeyModal: () => void;
-  apiKeyExists: "api key exists" | "api key not found" | "no user" | undefined;
 }) {
-  const { data: session, status } = useSession();
   const passwordKeyRef = useRef<HTMLInputElement>(null);
   const apiKeyRef = useRef<HTMLInputElement>(null);
   const [loadingIndicator, setLoadingIndicator] = useState<boolean>(false);
   const apiKeyMutation = api.main.getApiKey.useMutation();
   const [error, setError] = useState<string>("");
-  const { requestRouter, toggleAPIKeyModal, apiKeyExists } = props;
+  const { requestRouter, toggleAPIKeyModal } = props;
+  const apiKeyExists = api.main.checkIfApiKeyExists.useQuery().data;
 
   const submitState = () => {
     if (loadingIndicator) {

@@ -4,8 +4,8 @@ import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { Ubuntu } from "next/font/google";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useRef, useState } from "react";
-import { Button, Input, Link, Loading, Tooltip } from "@nextui-org/react";
+import React, { useRef, useState } from "react";
+import { Button, Input } from "@nextui-org/react";
 import PasswordModal from "@/components/PasswordModal";
 import { api } from "@/utils/api";
 
@@ -57,7 +57,9 @@ const AccountPage: NextPage = () => {
                 ** You have a stored API key, you may overwrite it if needed.
                 <br /> i.e. in case of lost password **
               </div>
-            ) : null}
+            ) : (
+              <div className="pb-12 italic">No stored API key found</div>
+            )}
             <form onSubmit={processKey}>
               <Input
                 ref={apiKeyRef}
